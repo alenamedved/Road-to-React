@@ -3,29 +3,7 @@ import "../App.css";
 import InputWithLabel from "./InputWithLabel";
 import List from "./List";
 
-const initialStories = [
-  {
-    title: "React",
-    url: "https://reactjs.org/",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
-
-const getAsyncStories = () =>
-  new Promise((resolve) =>
-    setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
-  );
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
 const useSemiPersistentState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -47,9 +25,7 @@ const actions = {
 };
 
 const storiesReducer = (state, action) => {
-  console.log("this is action:", action);
-  console.log("this is state:", state);
-
+  
   switch (action.type) {
     case actions.init:
       return {
@@ -86,33 +62,48 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
     "search", 
     "React"
-    );
+  );
+  const [url, setUrl] = React.useState(
+    `${API_ENDPOINT}${searchTerm}`
+  )
   //reduces is a function which takes two arg: current state (stories) and an action (dispatchStories) and returns a new state
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer, 
     { data: [], isLoading: false, isError: false }
   );
-  console.log(stories);
-
-  React.useEffect(() => {
+  
+  const handleSearchInput = (event) => {
+    setSearchTerm(event.target.value)
+  }
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`)
+  }
+  const handleFetchStories = React.useCallback(() => {
+    
     dispatchStories({ type: actions.init });
 
-    getAsyncStories()
+    fetch(url)
+      .then((response) => response.json())
       .then((result) => {
+        console.log(result)
         dispatchStories({
           type: actions.success,
-          payload: result.data.stories,
+          payload: result.hits,
         });
       })
       .catch(() => 
         dispatchStories({ type: actions.failure })
       );
-  }, []);
+  }, [url]);
+  
 
-  console.log("App renders");
-  //A
+  React.useEffect(() => {
+    handleFetchStories()
+  }, [handleFetchStories])
+
+ 
+ 
   const handleSearch = (event) => {
-    //C
     setSearchTerm(event.target.value);
   };
 
@@ -125,9 +116,7 @@ const App = () => {
     });
   };
 
-  const searchedStories = stories.data.filter((story) =>
-    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  
 
   return (
     <>
@@ -138,10 +127,16 @@ const App = () => {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
+      <button 
+        type="button"
+        disabled={!searchTerm}
+        onClick={handleSearchSubmit}
+      >Submit
+      </button>
       <p>
         Searching for <strong>{searchTerm}</strong>
       </p>
@@ -153,7 +148,7 @@ const App = () => {
         <p>Loading...</p>
       ) : (
         <List 
-          list={searchedStories} 
+          list={stories.data} 
           onRemoveItem={handleRemoveStory} 
         />
       )}
