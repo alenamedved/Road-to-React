@@ -1,9 +1,10 @@
 import * as React from "react";
 import axios from "axios";
-import "../App.css";
+import styles from "../App.module.css";
 import List from "./List";
 import SearchForm from "./SearchForm";
 import storiesReducer, { actions } from "./storiesReducer";
+
 
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
@@ -67,8 +68,8 @@ const App = () => {
   };
 
   return (
-    <>
-      <h1>My Hacker Stories</h1>
+    <div className={styles.container}>
+      <h1 className={styles.headlinePrimary}>My Hacker Stories</h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
@@ -79,7 +80,6 @@ const App = () => {
         Searching for <strong>{searchTerm}</strong>
       </p>
 
-      <hr />
       {stories.isError && <p>Something went wrong...</p>}
 
       {stories.isLoading ? (
@@ -87,7 +87,7 @@ const App = () => {
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-    </>
+    </div>
   );
 };
 
