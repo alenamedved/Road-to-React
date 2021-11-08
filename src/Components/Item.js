@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../App.module.css";
+import { ReactComponent as Check } from './check.svg';
 
 const Item = ({ item, onRemoveItem }) => {
   /* {url, author, num_comments, points} = props.item */
@@ -20,7 +21,7 @@ const Item = ({ item, onRemoveItem }) => {
           }}
           className={`${styles.button} ${styles.buttonSmall}`}
         >
-          Dismiss
+          <Check height="18px" width="18px" />
         </button>
       </span>
     </li>

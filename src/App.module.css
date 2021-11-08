@@ -32,6 +32,10 @@
   cursor: pointer;
   transition: all 0.1s ease-in;
 }
+.button:hover > svg  {
+  background-color: #ffffff;
+  stroke: #ffffff;
+}
 .button:hover {
   background: #171212;
   color: #ffffff;

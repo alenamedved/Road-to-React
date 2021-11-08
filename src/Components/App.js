@@ -5,6 +5,7 @@ import List from "./List";
 import SearchForm from "./SearchForm";
 import storiesReducer, { actions } from "./storiesReducer";
 
+
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const useSemiPersistentState = (key, initialState) => {
@@ -65,7 +66,7 @@ const App = () => {
 
     event.preventDefault();
   };
-console.log(styles)
+
   return (
     <div className={styles.container}>
       <h1 className={styles.headlinePrimary}>My Hacker Stories</h1>
