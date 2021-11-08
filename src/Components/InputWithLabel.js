@@ -1,5 +1,6 @@
 import React from "react";
 
+
 const InputWithLabel = ({
   id,
   value,
@@ -23,7 +24,7 @@ const InputWithLabel = ({
 
   return (
     <>
-      <label htmlFor={id}>{children} </label>
+      <label htmlFor={id} >{children} </label>
       &nbsp;
       {/* B */}
       <input
@@ -32,6 +33,7 @@ const InputWithLabel = ({
         type={type}
         value={value}
         onChange={onInputChange}
+        
       />
     </>
   );
